@@ -82,28 +82,26 @@ export default function Navbar() {
 
   return (
     <nav className={`navbar ${isVisible ? '' : 'navbar-hidden'}`}>
-      <div className="container">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '0 8px' }}>
 
         {/* Left Side: Logo & Text */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
-            width: '28px', height: '28px',
+            width: '32px', height: '32px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-            boxShadow: '0 0 15px var(--primary-glow)'
+            background: 'linear-gradient(to bottom, #3b82f6, #1e3a8a)'
           }}></div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <Link href="/" className="nav-brand text-gradient" style={{ display: 'flex', alignItems: 'center' }}>
+            <Link href="/" style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center' }}>
               Rifky Akbar Utomo Putra
               <span
                 onClick={handleSecretClick}
-                style={{ color: 'var(--text-main)', cursor: 'default' }}
-                title="."
+                style={{ color: 'transparent', cursor: 'default', userSelect: 'none' }}
               >
                 .
               </span>
             </Link>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1', fontWeight: 500 }}>
+            <span style={{ fontSize: '0.8rem', color: '#d1d5db', fontWeight: 400 }}>
               Creative Developer & UI/UX Designer
             </span>
           </div>
@@ -117,35 +115,43 @@ export default function Navbar() {
           <Link href="/projects" className={`nav-link ${pathname === '/projects' ? 'active' : ''}`}>
             Projects
           </Link>
-          <Link href="/certifications" className={`nav-link ${pathname === '/certifications' ? 'active' : ''}`}>
-            Certifications
+          <Link href="/blogs" className={`nav-link ${pathname === '/blogs' ? 'active' : ''}`}>
+            Blogs
           </Link>
         </div>
 
         {/* Right Side: Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <button
             onClick={toggleTheme}
-            className="btn btn-outline"
-            style={{ padding: '8px', borderRadius: '50%', border: 'none' }}
+            style={{ 
+              padding: '6px 12px', 
+              borderRadius: '20px', 
+              border: '1px solid rgba(255,255,255,0.1)', 
+              background: 'rgba(0,0,0,0.3)',
+              color: 'var(--text-muted)',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer'
+            }}
             title="Toggle Theme"
           >
-            {isLightMode ? <Moon size={18} /> : <Sun size={18} />}
+            {isLightMode ? <Sun size={14} /> : <Moon size={14} />}
           </button>
 
           {isAdmin && (
             <button
               onClick={logoutAdmin}
               className="btn btn-outline"
-              style={{ padding: '6px 12px', fontSize: '0.8rem', borderColor: 'var(--accent)', color: 'var(--accent)' }}
+              style={{ padding: '8px 16px', fontSize: '0.85rem' }}
             >
-              <LogOut size={14} /> Exit
+              <LogOut size={14} />
             </button>
           )}
           <a
             href="#contact"
             className="btn btn-primary"
-            style={{ padding: '10px 24px', fontSize: '0.9rem', borderRadius: 'var(--radius-sm)' }}
+            style={{ padding: '10px 24px', fontSize: '0.95rem' }}
           >
             Contact Me
           </a>
