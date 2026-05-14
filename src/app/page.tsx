@@ -146,6 +146,21 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const elements = document.querySelectorAll('.reveal');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [data]);
+
+  useEffect(() => {
     if (isEditing && data) {
       if (isEditing === 'techSkills') {
         setFormData([...data.techSkills]);
@@ -209,7 +224,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '800px', width: '100%' }}>
+          <div className="reveal" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '800px', width: '100%' }}>
             
             {/* Open to Work Pill */}
             <div style={{ 
@@ -281,11 +296,11 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <div style={{ borderRadius: '24px', overflow: 'hidden', height: '400px', width: '100%', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+              <div className="reveal" style={{ borderRadius: '24px', overflow: 'hidden', height: '400px', width: '100%', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
                 <img src={data.profile.image || 'https://via.placeholder.com/400'} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="reveal reveal-delay-1" style={{ display: 'flex', flexDirection: 'column' }}>
                 <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '24px', textAlign: 'center' }}>About Me</h2>
                 
                 <div style={{ fontSize: '1rem', lineHeight: 1.8, color: '#e2e8f0', marginBottom: '32px' }} dangerouslySetInnerHTML={{ __html: data.profile.about }} />
@@ -296,8 +311,18 @@ export default function Home() {
                 </a>
 
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+                  {data.profile.email && (
+                    <a href={`mailto:${data.profile.email}`} className="social-circle" title="Email">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    </a>
+                  )}
+                  {data.profile.phone && (
+                    <a href={`https://wa.me/${data.profile.phone.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="social-circle" title="WhatsApp">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    </a>
+                  )}
                   {Array.isArray(data.profile.social) && data.profile.social.map((s: any, idx: number) => (
-                    <a key={idx} href={s.url} target="_blank" rel="noreferrer" className="social-circle">
+                    <a key={idx} href={s.url} target="_blank" rel="noreferrer" className="social-circle" title={s.platform}>
                       <img 
                         src={`https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${s.platform.toLowerCase().replace(/\s+/g, '')}.svg`}
                         style={{ width: '18px', height: '18px', filter: 'invert(1)' }}
@@ -315,7 +340,7 @@ export default function Home() {
 
       {/* Soft Skills Section */}
       <section id="skills" className="section container">
-        <div className="section-title">
+        <div className="section-title reveal">
           <h2>My Skills</h2>
           <div className="section-title-line"></div>
         </div>
@@ -343,7 +368,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className="soft-skills-grid animate-fade-in delay-2">
+          <div className="soft-skills-grid reveal reveal-delay-1">
             {data.softSkills?.map((skill, idx) => (
               <div key={idx} className="soft-skill-cell">
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)', boxShadow: '0 0 10px var(--primary-glow)' }}></span>
@@ -356,7 +381,7 @@ export default function Home() {
 
       {/* Tech Stack Marquee Section */}
       <section className="section" style={{ overflow: 'hidden', padding: '60px 0', background: 'rgba(255,255,255,0.02)' }}>
-        <div className="container">
+        <div className="container reveal">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Tools I Use Daily</h2>
             {isAdmin && isEditing !== 'techSkills' && (
@@ -385,13 +410,15 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <TechMarquee techSkills={data.techSkills} />
+          <div className="reveal reveal-delay-1">
+            <TechMarquee techSkills={data.techSkills} />
+          </div>
         )}
       </section>
 
       {/* Experience Section */}
       <section id="experience" className="section container">
-        <div className="section-title">
+        <div className="section-title reveal">
           <h2>Work Experience</h2>
           <div className="section-title-line"></div>
         </div>
@@ -438,7 +465,7 @@ export default function Home() {
              </div>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', position: 'relative', paddingLeft: '24px' }}>
+          <div className="reveal reveal-delay-1" style={{ display: 'flex', flexDirection: 'column', gap: '32px', position: 'relative', paddingLeft: '24px' }}>
             <div style={{ position: 'absolute', left: '7px', top: '16px', bottom: '16px', width: '2px', background: 'var(--glass-border)' }}></div>
             {data.experiences.map((exp) => {
               const isActive = selectedExp?.id === exp.id;
@@ -495,76 +522,10 @@ export default function Home() {
         </div>
       )}
 
-      {/* Projects Section */}
-      <section id="projects" className="section container">
-        <div className="section-title">
-          <h2>Featured Projects</h2>
-          <div className="section-title-line"></div>
-        </div>
-
-        {isAdmin && isEditing !== 'projects' && (
-          <button className="btn btn-outline" style={{ float: 'right', marginBottom: '16px' }} onClick={() => startEdit('projects', data.projects || [])}>
-            <Edit2 size={16} /> Edit Projects
-          </button>
-        )}
-
-        {isEditing === 'projects' ? (
-          <div className="glass-panel admin-form" style={{ padding: '32px' }}>
-            {formData.map((proj: any, i: number) => (
-              <div key={i} className="glass-panel" style={{ padding: '20px', marginBottom: '16px', background: 'rgba(255,255,255,0.02)' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                  <input className="input-field" value={proj.title} onChange={e => { const newF = [...formData]; newF[i].title = e.target.value; setFormData(newF); }} placeholder="Project Title" />
-                  <input className="input-field" value={proj.link} onChange={e => { const newF = [...formData]; newF[i].link = e.target.value; setFormData(newF); }} placeholder="Project URL (Optional)" />
-                  <div style={{ position: 'relative', height: '40px' }}>
-                    <button className="btn btn-outline" style={{ width: '100%' }}>{proj.image ? 'Change Image' : 'Upload Image'}</button>
-                    <input type="file" accept="image/*" onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          const newF = [...formData];
-                          newF[i].image = reader.result as string;
-                          setFormData(newF);
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
-                  </div>
-                </div>
-                <textarea className="input-field" value={proj.description} onChange={e => { const newF = [...formData]; newF[i].description = e.target.value; setFormData(newF); }} placeholder="Short Description" rows={2} />
-              </div>
-            ))}
-            <button className="btn btn-outline" onClick={() => setFormData([...formData, { id: Date.now().toString(), title: 'New Project', description: '', image: '', link: '' }])}>+ Add Project</button>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-              <button className="btn btn-primary" onClick={() => handleSave('projects')}><Save size={18}/> Save Changes</button>
-              <button className="btn btn-secondary" onClick={() => setIsEditing(null)}><X size={18}/> Cancel</button>
-            </div>
-          </div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' }}>
-            {data.projects?.map((proj) => (
-              <div key={proj.id} className="glass-panel" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ position: 'relative', height: '200px', width: '100%', background: 'rgba(255,255,255,0.05)' }}>
-                  {proj.image ? (
-                    <img src={proj.image} alt={proj.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>No Image</div>
-                  )}
-                </div>
-                <div style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{proj.title}</h3>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '24px', flex: 1 }}>{proj.description}</p>
-                  <a href={`/projects/${proj.id}`} className="btn btn-outline" style={{ width: '100%' }}>View Project Details</a>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
 
       {/* Contact Section */}
-      <section id="contact" className="section container" style={{ paddingBottom: '100px' }}>
-        <div className="section-title">
+      <section id="contact" className="section container" style={{ paddingBottom: '40px' }}>
+        <div className="section-title reveal">
           <h2>Get in Touch</h2>
           <div className="section-title-line"></div>
         </div>
@@ -572,21 +533,21 @@ export default function Home() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '64px', alignItems: 'center' }}>
           
           {/* Left: 3D SVG Envelope */}
-          <div className="animate-fade-in" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+          <div className="reveal" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
             <div className="floating-envelope" style={{ position: 'relative' }}>
               <svg width="240" height="180" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="10" y="20" width="220" height="140" rx="16" fill="var(--glass-bg)" stroke="var(--primary)" strokeWidth="4"/>
-                <path d="M10 36L120 100L230 36" stroke="var(--primary)" strokeWidth="4" strokeLinejoin="round"/>
-                <path d="M10 144L85 100" stroke="var(--primary)" strokeWidth="4" strokeLinejoin="round"/>
-                <path d="M230 144L155 100" stroke="var(--primary)" strokeWidth="4" strokeLinejoin="round"/>
-                <circle cx="120" cy="100" r="16" fill="var(--bg-color)" stroke="var(--primary)" strokeWidth="4"/>
-                <path d="M112 100L118 106L128 94" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                <rect x="10" y="20" width="220" height="140" rx="16" fill="transparent" stroke="#ffffff" strokeWidth="4"/>
+                <path d="M10 36L120 100L230 36" stroke="#ffffff" strokeWidth="4" strokeLinejoin="round"/>
+                <path d="M10 144L85 100" stroke="#ffffff" strokeWidth="4" strokeLinejoin="round"/>
+                <path d="M230 144L155 100" stroke="#ffffff" strokeWidth="4" strokeLinejoin="round"/>
+                <circle cx="120" cy="100" r="16" fill="var(--bg-color)" stroke="#ffffff" strokeWidth="4"/>
+                <path d="M112 100L118 106L128 94" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
           </div>
 
           {/* Right: Contact Form */}
-          <div className="glass-panel animate-fade-in delay-2" style={{ padding: '40px' }}>
+          <div className="glass-panel reveal reveal-delay-1" style={{ padding: '40px' }}>
             <form onSubmit={(e) => { e.preventDefault(); window.location.href = `mailto:${data.profile.email}`; }} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <div>
                 <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)' }}>Your Name</label>
@@ -606,9 +567,10 @@ export default function Home() {
             </form>
           </div>
         </div>
+      </section>
 
-        {/* Footer Configuration Area */}
-        <div style={{ position: 'relative', marginTop: '100px' }}>
+      {/* Footer Configuration Area */}
+      <footer style={{ position: 'relative', width: '100%' }}>
           {isAdmin && isEditing !== 'profile-footer' && (
             <button className="btn btn-outline" style={{ position: 'absolute', right: '16px', top: '-40px', padding: '4px 12px', fontSize: '0.8rem' }} onClick={() => startEdit('profile-footer', data.profile)}>
               <Edit2 size={12} /> Edit Footer
@@ -735,7 +697,7 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <div className="glass-panel animate-fade-in delay-4" style={{ padding: '32px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '32px', background: 'var(--panel-bg)', border: 'none', borderRadius: '32px 32px 0 0', marginTop: '64px', width: '100%', maxWidth: '100%' }}>
+              <div className="glass-panel reveal" style={{ padding: '32px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '32px', background: 'var(--panel-bg)', border: 'none', borderRadius: '0', borderTop: '1px solid var(--panel-border)', marginTop: '0', width: '100%', maxWidth: '100%' }}>
                  <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                     <div style={{ width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', background: '#333' }}>
                       <img src={data.profile.footerImage || 'https://via.placeholder.com/80'} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -775,8 +737,7 @@ export default function Home() {
               </div>
             </>
           )}
-        </div>
-      </section>
+      </footer>
     </main>
   );
 }
