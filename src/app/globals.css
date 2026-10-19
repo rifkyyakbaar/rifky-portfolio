@@ -512,6 +512,21 @@ a {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
+/* Project detail 2-col layout */
+.project-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .project-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
 .tooltip-container .tooltip {
   position: absolute;
   top: -45px;
