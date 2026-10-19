@@ -302,9 +302,91 @@ a {
     bottom: 24px;
     width: calc(100% - 48px);
     min-width: 0;
+    padding: 10px 16px;
   }
   .nav-links {
     display: none;
+  }
+
+  /* Hide "Contact Me" button on mobile navbar — use the contact section instead */
+  .navbar .btn-primary {
+    display: none;
+  }
+
+  .section {
+    padding: 56px 0;
+  }
+
+  .section-title h2 {
+    font-size: 1.75rem;
+  }
+
+  .stat-card {
+    width: auto !important;
+    flex: 1 1 120px;
+    padding: 20px 12px;
+  }
+
+  .stat-card h3 {
+    font-size: 1.8rem;
+  }
+
+  .admin-form {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* About section: stack image above text */
+  #about .container > div,
+  section[id="about"] > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hero: reduce top padding */
+  #hero {
+    padding-top: 80px !important;
+  }
+
+  /* Hero stat cards row: wrap and shrink */
+  #hero .stat-card-row {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* Footer: stack content */
+  footer .glass-panel > div:first-child {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  footer .glass-panel {
+    padding: 24px 20px !important;
+  }
+
+  footer > div:last-child {
+    padding: 16px 20px !important;
+    text-align: center;
+  }
+
+  /* Contact form panel */
+  section[id="contact"] .glass-panel {
+    padding: 24px 20px !important;
+  }
+
+  /* Navbar name: hide subtitle on very small screens */
+  .navbar-subtitle {
+    display: none;
+  }
+
+  /* Add bottom padding so bottom navbar doesn't cover content */
+  body {
+    padding-bottom: 100px;
+  }
+
+  /* Shrink name text so it doesn't overflow */
+  .navbar a[href="/"] {
+    font-size: 0.85rem !important;
   }
 }
 
@@ -422,4 +504,47 @@ a {
   100% {
     transform: translateY(0px);
   }
+}
+
+.tech-pill-icon:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-container .tooltip {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--text-main);
+  color: var(--bg-color);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+.tooltip-container .tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--text-main) transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }

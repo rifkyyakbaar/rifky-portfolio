@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ExternalLink, Edit2, Plus, Check, X, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 
 type Project = {
   id: string;
@@ -70,7 +71,8 @@ export default function Projects() {
   };
 
   return (
-    <main className="container section" style={{ paddingTop: '120px' }}>
+    <main>
+      <div className="container section" style={{ paddingTop: '120px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '48px', flexWrap: 'wrap', gap: '24px' }}>
         <h1 className="section-title text-gradient" style={{ marginBottom: 0 }}>My Projects</h1>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -184,36 +186,10 @@ export default function Projects() {
           )}
         </div>
       )}
+      </div>
 
       {fullData?.profile && (
-        <div className="glass-panel animate-fade-in delay-4" style={{ marginTop: '96px', padding: '32px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '32px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '24px' }}>
-           <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-              <img src={fullData.profile.footerImage || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop'} alt="Profile" style={{ width: '80px', height: '80px', borderRadius: '16px', objectFit: 'cover' }} />
-              <div>
-                <h3 style={{ fontSize: '1.25rem', marginBottom: '4px' }}>{fullData.profile.name}</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '4px' }}>{fullData.profile.title}</p>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{fullData.profile.email}</p>
-              </div>
-           </div>
-           
-           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-              <a href={`mailto:${fullData.profile.email}`} target="_blank" rel="noreferrer" className="btn btn-outline" style={{ padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
-              </a>
-              <a href={`https://wa.me/${fullData.profile.phone?.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="btn btn-outline" style={{ padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-              </a>
-              <a href={fullData.profile.social?.instagram} target="_blank" rel="noreferrer" className="btn btn-outline" style={{ padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
-              </a>
-              <a href={fullData.profile.social?.linkedin} target="_blank" rel="noreferrer" className="btn btn-outline" style={{ padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-              </a>
-              <a href={fullData.profile.social?.github} target="_blank" rel="noreferrer" className="btn btn-outline" style={{ padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.24c3-.34 6-1.53 6-6.76a5.2 5.2 0 0 0-1.39-3.5 5.03 5.03 0 0 0-.13-3.4s-1.13-.36-3.7 1.38a12.98 12.98 0 0 0-6.8 0C5.13 4.64 4 5 4 5a5.03 5.03 0 0 0-.13 3.4A5.2 5.2 0 0 0 2.5 12c0 5.23 3 6.42 6 6.76a4.8 4.8 0 0 0-1 3.24v4"></path><path d="M4 19c-3 0-3-3-3-3"></path></svg>
-              </a>
-           </div>
-        </div>
+        <Footer profile={fullData.profile} />
       )}
     </main>
   );

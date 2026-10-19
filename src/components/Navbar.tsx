@@ -101,7 +101,7 @@ export default function Navbar() {
                 .
               </span>
             </Link>
-            <span style={{ fontSize: '0.8rem', color: '#d1d5db', fontWeight: 400 }}>
+            <span className="navbar-subtitle" style={{ fontSize: '0.8rem', color: '#d1d5db', fontWeight: 400 }}>
               Creative Developer & UI/UX Designer
             </span>
           </div>
@@ -115,8 +115,8 @@ export default function Navbar() {
           <Link href="/projects" className={`nav-link ${pathname === '/projects' ? 'active' : ''}`}>
             Projects
           </Link>
-          <Link href="/blogs" className={`nav-link ${pathname === '/blogs' ? 'active' : ''}`}>
-            Blogs
+          <Link href="/certifications" className={`nav-link ${pathname === '/certifications' ? 'active' : ''}`}>
+            Certifications
           </Link>
         </div>
 

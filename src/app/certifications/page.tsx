@@ -3,11 +3,14 @@
 import { useEffect, useState } from 'react';
 import { Award, Edit2, Plus, Check, X, Trash2 } from 'lucide-react';
 
+import Footer from '@/components/Footer';
+
 type Certification = {
   id: string;
   title: string;
   issuer: string;
   date: string;
+  image?: string;
 };
 
 export default function Certifications() {
@@ -50,7 +53,8 @@ export default function Certifications() {
       id: Date.now().toString(),
       title: 'New Certification',
       issuer: 'Issuing Organization',
-      date: new Date().getFullYear().toString()
+      date: new Date().getFullYear().toString(),
+      image: ''
     }]);
   };
 
@@ -59,7 +63,8 @@ export default function Certifications() {
   };
 
   return (
-    <main className="container section" style={{ paddingTop: '120px' }}>
+    <main>
+      <div className="container section" style={{ paddingTop: '120px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '48px' }}>
         <h1 className="section-title text-gradient" style={{ marginBottom: 0 }}>Certifications</h1>
         {isAdmin && !isEditing && (
@@ -74,11 +79,30 @@ export default function Certifications() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {formData.map((cert, i) => (
               <div key={cert.id} style={{ borderBottom: '1px solid var(--glass-border)', paddingBottom: '16px', position: 'relative', display: 'flex', gap: '16px' }}>
-                <div className="admin-form" style={{ flex: 1 }}>
+                <div className="admin-form" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <input className="input-field" value={cert.title} onChange={e => { const newF = [...formData]; newF[i].title = e.target.value; setFormData(newF); }} placeholder="Certification Title" />
-                  <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
+                  <div style={{ display: 'flex', gap: '16px' }}>
                     <input className="input-field" value={cert.issuer} onChange={e => { const newF = [...formData]; newF[i].issuer = e.target.value; setFormData(newF); }} placeholder="Issuer" />
                     <input className="input-field" value={cert.date} onChange={e => { const newF = [...formData]; newF[i].date = e.target.value; setFormData(newF); }} placeholder="Date/Year" />
+                  </div>
+                  <div style={{ position: 'relative', height: '100px', border: '1px dashed var(--glass-border)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                    {cert.image ? (
+                      <img src={cert.image} alt="Cert" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Upload Certificate Image</span>
+                    )}
+                    <input type="file" accept="image/*" onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          const newF = [...formData];
+                          newF[i].image = reader.result as string;
+                          setFormData(newF);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
                   </div>
                 </div>
                 <button 
@@ -100,16 +124,25 @@ export default function Certifications() {
           </div>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', maxWidth: '1000px', margin: '0 auto' }}>
           {certs.map((cert, index) => (
-            <div key={cert.id} className="glass-panel animate-fade-in" style={{ padding: '32px', display: 'flex', alignItems: 'flex-start', gap: '20px', animationDelay: `${index * 0.1}s` }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--glass-highlight)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Award size={24} color="var(--primary)" />
+            <div key={cert.id} className="glass-panel animate-fade-in" style={{ padding: '24px', display: 'flex', flexWrap: 'wrap', gap: '32px', animationDelay: `${index * 0.1}s`, borderRadius: '24px' }}>
+              <div style={{ flex: '1 1 300px', borderRadius: '16px', overflow: 'hidden', background: 'var(--glass-highlight)', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {cert.image ? (
+                  <img src={cert.image} alt={cert.title} style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }} />
+                ) : (
+                  <div style={{ width: '100%', minHeight: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Award size={48} color="var(--glass-border)" />
+                  </div>
+                )}
               </div>
-              <div>
-                <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>{cert.title}</h3>
-                <p style={{ color: 'var(--text-muted)', marginBottom: '4px' }}>{cert.issuer}</p>
-                <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 600 }}>{cert.date}</span>
+              <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                  <Award size={24} color="var(--primary)" />
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 700 }}>{cert.title}</h3>
+                </div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '8px', lineHeight: 1.6 }}>{cert.issuer}</p>
+                <span style={{ display: 'inline-block', padding: '6px 16px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '100px', fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 600, width: 'fit-content', marginTop: '12px' }}>{cert.date}</span>
               </div>
             </div>
           ))}
@@ -117,6 +150,11 @@ export default function Certifications() {
             <p style={{ color: 'var(--text-muted)' }}>No certifications added yet.</p>
           )}
         </div>
+      )}
+      </div>
+
+      {fullData?.profile && (
+        <Footer profile={fullData.profile} />
       )}
     </main>
   );

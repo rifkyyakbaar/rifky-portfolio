@@ -75,39 +75,34 @@ const TechMarquee = ({ techSkills }: { techSkills: { name: string, icon: string 
   }, []);
 
   return (
-    <div className="tech-marquee-container" style={{ overflow: 'hidden', whiteSpace: 'nowrap', width: '100%', position: 'relative', display: 'flex', padding: '48px 0', maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
+    <div className="tech-marquee-container" style={{ overflow: 'visible', whiteSpace: 'nowrap', width: '100%', position: 'relative', display: 'flex', paddingTop: '50px', paddingBottom: '16px', maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
       <div 
         ref={containerRef}
-        style={{ display: 'flex', gap: '32px', willChange: 'transform' }}
+        style={{ display: 'flex', gap: '24px', willChange: 'transform' }}
       >
-        {[...techSkills, ...techSkills].map((tech, idx) => (
+        {[...techSkills, ...techSkills, ...techSkills, ...techSkills].map((tech, idx) => (
           <div 
             key={idx} 
-            className="tech-icon-wrapper"
+            className="tech-icon-wrapper tooltip-container"
             style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             onMouseEnter={() => isHovered.current = true}
             onMouseLeave={() => isHovered.current = false}
           >
-            <div className="tech-tooltip" style={{ position: 'absolute', top: '-35px', background: 'var(--primary)', color: 'white', padding: '4px 12px', borderRadius: '100px', fontSize: '0.8rem', opacity: 0, transition: 'opacity 0.2s', pointerEvents: 'none', whiteSpace: 'nowrap' }}>
-              {tech.name}
-            </div>
-            <div className="tech-pill glass-panel" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '64px', height: '64px', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.3s' }}>
+            <div className="tech-pill-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(255,255,255,0.05)', cursor: 'pointer', transition: 'all 0.3s' }}>
               <img 
                 src={tech.icon || `https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${tech.name.toLowerCase().replace(/\s+/g, '').replace(/\./g, 'dot')}.svg`} 
                 alt={tech.name}
-                style={{ width: '32px', height: '32px', filter: tech.name.toLowerCase() === 'github' || tech.name.toLowerCase() === 'next.js' ? 'invert(1)' : 'none' }}
+                className="tech-icon-img"
+                style={{ width: '32px', height: '32px', transition: 'all 0.3s', filter: tech.name.toLowerCase() === 'github' || tech.name.toLowerCase() === 'next.js' ? 'invert(1)' : 'none' }}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>';
+                  (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>';
                 }}
               />
             </div>
+            <div className="tooltip">{tech.name}</div>
           </div>
         ))}
       </div>
-      <style jsx>{`
-        .tech-icon-wrapper:hover .tech-tooltip { opacity: 1 !important; transform: translateY(-5px); }
-        .tech-icon-wrapper:hover .tech-pill { border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); transform: scale(1.1); }
-      `}</style>
     </div>
   );
 };
@@ -119,11 +114,22 @@ export default function Home() {
   const [formData, setFormData] = useState<any>(null);
   const [selectedExp, setSelectedExp] = useState<any>(null);
   const [currentExpImageIndex, setCurrentExpImageIndex] = useState(0);
+  const [aboutImageIndex, setAboutImageIndex] = useState(0);
 
   useEffect(() => {
     fetchData();
     setIsAdmin(localStorage.getItem('adminMode') === 'true');
   }, []);
+
+  useEffect(() => {
+    if (!data?.profile) return;
+    const images = data.profile.images || (data.profile.image ? [data.profile.image] : []);
+    if (images.length <= 1) return;
+    const timer = setTimeout(() => {
+      setAboutImageIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [aboutImageIndex, data]);
 
   const fetchData = async () => {
     try {
@@ -204,7 +210,7 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section id="hero" className="section container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '120px' }}>
+      <section id="hero" className="section container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: 'clamp(80px, 15vw, 120px)', paddingBottom: 'clamp(80px, 15vw, 120px)' }}>
         
         {isAdmin && isEditing !== 'profile-hero' && (
           <button className="btn btn-outline" style={{ position: 'absolute', top: '100px', right: '20px' }} onClick={() => startEdit('profile-hero', data.profile)}>
@@ -253,7 +259,7 @@ export default function Home() {
             </a>
 
             {/* Stat Cards Row */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', width: '100%', marginBottom: '20px' }}>
+            <div className="stat-card-row" style={{ display: 'flex', justifyContent: 'center', gap: '24px', width: '100%', marginBottom: '20px', flexWrap: 'wrap' }}>
               <div className="stat-card" style={{ width: '180px' }}>
                 <h3 style={{ fontSize: '2.5rem' }}>20++</h3>
                 <p>framework<br/>mastered</p>
@@ -285,9 +291,42 @@ export default function Home() {
           </button>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 400px) 1fr', gap: '48px', alignItems: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 400px))', gap: '48px', alignItems: 'center', justifyContent: 'center' }}>
           {isEditing === 'profile-about' ? (
             <div className="glass-panel admin-form" style={{ padding: '32px', gridColumn: '1 / -1' }}>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)' }}>About Me Photos (Slider)</label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {(formData.images || (formData.image ? [formData.image] : [])).map((img: string, idx: number) => (
+                    <div key={idx} style={{ position: 'relative', width: '80px', height: '80px' }}>
+                      <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                      <button 
+                        onClick={() => {
+                          const newImages = [...(formData.images || [formData.image])];
+                          newImages.splice(idx, 1);
+                          setFormData({...formData, images: newImages});
+                        }}
+                        style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
+                      >×</button>
+                    </div>
+                  ))}
+                  <div style={{ position: 'relative', width: '80px', height: '80px', border: '1px dashed var(--text-muted)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                    <span style={{ fontSize: '24px', color: 'var(--text-muted)' }}>+</span>
+                    <input type="file" accept="image/*" onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          const newImages = [...(formData.images || (formData.image ? [formData.image] : []))];
+                          newImages.push(reader.result as string);
+                          setFormData({...formData, images: newImages});
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
+                  </div>
+                </div>
+              </div>
               <textarea className="input-field" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} rows={6} />
               <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
                 <button className="btn btn-primary" onClick={() => handleSave('profile-about')}><Check size={16}/> Save</button>
@@ -296,8 +335,40 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <div className="reveal" style={{ borderRadius: '24px', overflow: 'hidden', height: '400px', width: '100%', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-                <img src={data.profile.image || 'https://via.placeholder.com/400'} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div className="reveal" style={{ borderRadius: '24px', overflow: 'hidden', height: '400px', width: '100%', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', position: 'relative' }}>
+                {(() => {
+                  const images = data.profile.images || (data.profile.image ? [data.profile.image] : ['https://via.placeholder.com/400']);
+                  return (
+                    <>
+                      <img src={images[aboutImageIndex] || images[0]} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.5s ease-in-out' }} />
+                      {images.length > 1 && (
+                        <>
+                          <button 
+                            onClick={() => setAboutImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
+                            style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                          >
+                            <ChevronLeft size={20} />
+                          </button>
+                          <button 
+                            onClick={() => setAboutImageIndex((prev) => (prev + 1) % images.length)}
+                            style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                          >
+                            <ChevronRight size={20} />
+                          </button>
+                          <div style={{ position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px' }}>
+                            {images.map((_: any, idx: number) => (
+                              <button 
+                                key={idx} 
+                                onClick={() => setAboutImageIndex(idx)}
+                                style={{ width: '8px', height: '8px', borderRadius: '50%', background: idx === aboutImageIndex ? 'var(--primary)' : 'rgba(255,255,255,0.5)', border: 'none', cursor: 'pointer', padding: 0 }}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
               
               <div className="reveal reveal-delay-1" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -379,13 +450,15 @@ export default function Home() {
         )}
       </section>
 
-      {/* Tech Stack Marquee Section */}
-      <section className="section" style={{ overflow: 'hidden', padding: '60px 0', background: 'rgba(255,255,255,0.02)' }}>
+      {/* Tech Stack Section */}
+      <section className="section" style={{ overflow: 'hidden', padding: '60px 0' }}>
         <div className="container reveal">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Tools I Use Daily</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px' }}>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 700, display: 'flex', gap: '8px', alignItems: 'center' }}>
+              My <span style={{ color: 'var(--primary)' }}>Skills</span>
+            </h2>
             {isAdmin && isEditing !== 'techSkills' && (
-              <button className="btn btn-outline" onClick={() => startEdit('techSkills', data.techSkills)}>
+              <button className="btn btn-outline" style={{ marginTop: '16px' }} onClick={() => startEdit('techSkills', data.techSkills)}>
                 <Edit2 size={16} /> Edit Stack
               </button>
             )}
@@ -410,8 +483,10 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className="reveal reveal-delay-1">
-            <TechMarquee techSkills={data.techSkills} />
+          <div className="reveal reveal-delay-1" style={{ display: 'flex', justifyContent: 'center', padding: '0 24px' }}>
+            <div className="glass-panel" style={{ width: '100%', padding: '16px', borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--glass-border)', maxWidth: '900px' }}>
+              <TechMarquee techSkills={data.techSkills} />
+            </div>
           </div>
         )}
       </section>
@@ -498,7 +573,10 @@ export default function Home() {
       {/* Modal for Experience */}
       {selectedExp && (
         <div className="modal-backdrop open" onClick={() => setSelectedExp(null)}>
-          <div className="modal-content glass-panel" onClick={e => e.stopPropagation()} style={{ padding: '32px', maxWidth: '700px' }}>
+          <div className="modal-content glass-panel" onClick={e => e.stopPropagation()} style={{ padding: '32px', maxWidth: '700px', position: 'relative' }}>
+            <button onClick={() => setSelectedExp(null)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white', zIndex: 10, transition: 'background 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}>
+              <X size={16} />
+            </button>
             
             {/* Experience Image Slider */}
             <div style={{ position: 'relative', height: '300px', width: '100%', marginBottom: '24px', borderRadius: '16px', overflow: 'hidden' }}>
@@ -517,7 +595,6 @@ export default function Home() {
               {selectedExp.description}
             </div>
 
-            <button className="btn btn-outline" style={{ marginTop: '32px', width: '100%' }} onClick={() => setSelectedExp(null)}>Close</button>
           </div>
         </div>
       )}
